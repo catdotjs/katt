@@ -4,6 +4,15 @@ function UnitName(name){
     switch(name){
 
         ///-----------Metric-----------
+        // Lenght
+        case "cm":
+        return "Centimeter";
+
+        case "m":
+        return "Meter";
+
+        case "km":
+        return "Kilometer";
         // Mass
         case "g":
         return "Grams";
@@ -29,6 +38,15 @@ function UnitName(name){
         return "Kelvin";
 
         ///-----------Imperial-----------
+        // Lenght
+        case "in":
+        return "Inch";
+
+        case "ft":
+        return "foot";
+
+        case "ya":
+        return "yard";
         // Mass
         case "oz":
         return "Ounce";
@@ -57,7 +75,7 @@ function UnitName(name){
         case "s":
         return "Second";
 
-        case "m":
+        case "mn":
         return "Minute";
 
         case "h":
@@ -76,7 +94,7 @@ function UnitName(name){
         return "Year";
     }
 }
-const precision = 2;
+const precision = 4;
 const numbFormat = new Intl.NumberFormat('en-US', { maximumFractionDigits: precision });
 module.exports = {
     TemperatureConvert : function(convert){
@@ -97,7 +115,8 @@ module.exports = {
            case "f":
             return "``"+toConvert+" Fahrenheit`` is **"+(toConvert-273.15).toFixed(precision)+" Celsius** and **"+(((toConvert-273.15)*1.8)+32).toFixed(precision)+" Kelvin**";
            default:
-            return "error";
+            return `unit is wrong or missing >m<!
+            ->For Temperature: **C**, **K** and **F** are allowed.`;
        }
     },
 
@@ -106,68 +125,76 @@ module.exports = {
         toConvert = parseFloat(convert.replace(/[a-z,A-Z, ]/g,""));
         if(convert.endsWith("d")){
             return "``"+toConvert+" Degree(s)`` is **"+(toConvert*(Math.PI/180)).toFixed(precision+4)+" Radian(s)**";
-        }else{
+        }else if(convert.endsWith("r")){ 
             return "``"+toConvert+" Radian(s)`` is **"+(toConvert*(180/Math.PI)).toFixed(precision+4)+" Degree(s)**";
+        }else{
+            return `unit is wrong or missing >m<!
+            ->For Angle: **R** and *D** are allowed.`;
         }
     },
 
     TimeConvert : function(convert){
-        const timeUnits = ["ms","s","m","h","d","w","mo","y"];
-        let toConvert = parseFloat(parseFloat(convert.replace(/[a-z,A-Z, ]/g,"")));
-        let unit = convert.replace(/[ -9]/g,'');
-        let returnText = "``"+toConvert+" "+UnitName(unit)+"(s)`` is\n";
+        const timeUnits = ["ms","s","mn","h","d","w","mo","y"];
+        if(timeUnits.includes(convert)) {
+            let toConvert = parseFloat(parseFloat(convert.replace(/[a-z,A-Z, ]/g,"")));
+            let unit = convert.replace(/[ -9]/g,'');
+            let returnText = "``"+toConvert+" "+UnitName(unit)+"(s)`` is\n";
 
-        switch(unit){
-            case timeUnits[0]: //milliseconds
-             millisecond = toConvert;
-            break;
+            switch(unit){
+                case timeUnits[0]: //milliseconds
+                 millisecond = toConvert;
+                break;
 
-            case timeUnits[1]: //seconds
-             millisecond = toConvert*1000;
-            break;
+                case timeUnits[1]: //seconds
+                 millisecond = toConvert*1000;
+                break;
 
-            case timeUnits[2]: //minutes
-             millisecond = toConvert*1000*60;
-            break;
-            
-            case timeUnits[3]: //hours
-             millisecond = toConvert*1000*60*60;
-            break;
+                case timeUnits[2]: //minutes
+                 millisecond = toConvert*1000*60;
+                break;
 
-            case timeUnits[4]: //days
-             millisecond = toConvert*1000*60*60*24;
-            break;
-            
-            case timeUnits[5]: //weeks
-             millisecond = toConvert*1000*60*60*24*7;
-            break;
+                case timeUnits[3]: //hours
+                 millisecond = toConvert*1000*60*60;
+                break;
 
-            case timeUnits[6]: //months
-             millisecond = toConvert*1000*60*60*24*7*4.34524;
-            break;
+                case timeUnits[4]: //days
+                 millisecond = toConvert*1000*60*60*24;
+                break;
 
-            case timeUnits[7]: //years
-             millisecond = toConvert*1000*60*60*24*365;
-            break;
+                case timeUnits[5]: //weeks
+                 millisecond = toConvert*1000*60*60*24*7;
+                break;
 
-            default:
-            return "error";
+                case timeUnits[6]: //months
+                 millisecond = toConvert*1000*60*60*24*7*4.34524;
+                break;
+
+                case timeUnits[7]: //years
+                 millisecond = toConvert*1000*60*60*24*365;
+                break;
+
+                default:
+                return "error";
+            }
+
+            second = millisecond/1000;
+            minute = second/60;
+            hour = minute/60;
+            day = hour/24;
+            week = day/7;
+            month = week/4.34524;
+            year = day/365;
+
+            convertedNumbers=[millisecond,second,minute,hour,day,week,month,year];
+            for(let i=0;i<convertedNumbers.length;i++){
+                returnText+=(unit!=timeUnits[i]?"**"+numbFormat.format(convertedNumbers[i].toFixed(precision))+" "+UnitName(timeUnits[i])+"(s)**\n":"");
+            }
+
+            return returnText;
+        }else{
+            return `unit is wrong or missing >m<!
+            ->For Time: **${timeUnits[0]}**, **${timeUnits[1]}**, **${timeUnits[2]}**, **${timeUnits[3]}**, **${timeUnits[4]}**, **${timeUnits[5]}**, **${timeUnits[6]}** and **${timeUnits[7]}** are allowed.`; 
         }
-
-        second = millisecond/1000;
-        minute = second/60;
-        hour = minute/60;
-        day = hour/24;
-        week = day/7;
-        month = week/4.34524;
-        year = day/365;
-        
-        convertedNumbers=[millisecond,second,minute,hour,day,week,month,year];
-        for(let i=0;i<convertedNumbers.length;i++){
-            returnText+=(unit!=timeUnits[i]?"**"+numbFormat.format(convertedNumbers[i].toFixed(precision))+" "+UnitName(timeUnits[i])+"(s)**\n":"");
-        }
-
-        return returnText;
     },
 
     MassConvert : function(convert){
@@ -222,14 +249,16 @@ module.exports = {
                 returnText+=" **"+numbFormat.format(convertedNumbers[i].toFixed(precision))+" "+UnitName(metric[i])+"(s)**";
             }
         }else{
-            return "unit is wrong >m<! ";
+            return `unit is wrong or missing >m<!
+            ->For metric: **${metric[0]}**, **${metric[1]}** and **${metric[2]}** are allowed.
+            ->For imperial: **${imperial[0]}**, **${imperial[1]}** and **${imperial[2]}** are allowed.`;
         }
         return returnText;
     },
 
     VolumeConvert : function(convert){
         const metric = ["ml","l"];
-        const imperial = ["floz","lg"]
+        const imperial = ["floz","lg"];
 
         let unit = convert.replace(/[ -9]/g,'');
         let toConvert = parseFloat(convert.replace(/[a-z,A-Z, ]/g,""));
@@ -268,9 +297,68 @@ module.exports = {
                 returnText+=" **"+numbFormat.format(convertedNumbers[i].toFixed(precision))+" "+UnitName(metric[i])+"(s)**";
             }
         }else{
-           return `unit is wrong >m<!\n
-           ->For metric: **${metric[0]}** and **${metric[1]}** is allowed.\n
-           ->For imperial: **${imperial[0]}** and **${imperial[1]}** is allowed.`;
+           return `unit is wrong or missing >m<!
+           ->For metric: **${metric[0]}** and **${metric[1]}** are allowed.
+           ->For imperial: **${imperial[0]}** and **${imperial[1]}** are allowed.`;
+        }
+        return returnText;
+    },
+
+    LenghtConvert : function(convert){
+        const metric = ["cm","m","km"];
+        const imperial = ['in',"ft","ya"];
+
+        let unit = convert.replace(/[ -9]/g,'');
+        let toConvert = parseFloat(convert.replace(/[a-z,A-Z, ]/g,""));
+        let returnText = "``"+toConvert+" "+UnitName(unit)+"(s)`` is";
+
+        if(metric.includes(unit)){
+            switch(unit){
+                case metric[0]:
+                 inch = toConvert/2.54;
+                break;
+
+                case metric[1]:
+                 inch = toConvert*39.3701;
+                break;
+
+                case metric[2]:
+                 inch = toConvert*39370.1;
+            }
+
+            ft = inch/12;
+            ya = ft/3;
+            
+            convertedNumbers = [inch,ft,ya];
+
+            for(let i=0;i<convertedNumbers.length;i++){
+                returnText+=" **"+numbFormat.format(convertedNumbers[i].toFixed(precision))+" "+UnitName(imperial[i])+"(s)**";
+            }
+        }else if(imperial.includes(unit)){
+            switch(unit){
+                case imperial[0]:
+                 cm = toConvert*2.54;
+                break;
+
+                case imperial[1]:
+                 cm = toConvert*30.48;
+                break;
+
+                case imperial[2]:
+                 cm = toConvert*91.44;
+            }
+            m = cm/100;
+            km = m/1000;
+
+            convertedNumbers = [cm,m,km];
+
+            for(let i=0;i<convertedNumbers.length;i++){
+                returnText+=" **"+numbFormat.format(convertedNumbers[i].toFixed(precision))+" "+UnitName(metric[i])+"(s)**";
+            }
+        }else{
+        return `unit is wrong or missing >m<!
+            ->For metric: **${metric[0]}**, **${metric[1]}** and **${metric[2]}** are allowed.
+            ->For imperial: **${imperial[0]}**, **${imperial[1]}** and **${imperial[2]}** are allowed.`;
         }
         return returnText;
     },

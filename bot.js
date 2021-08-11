@@ -5,7 +5,7 @@ const axios = require("axios");
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
 
-const { TemperatureConvert, AngleConvert, TimeConvert, MassConvert, VolumeConvert } = require('./Scripts/ConvertionLibrary.js');
+const { TemperatureConvert, AngleConvert, TimeConvert, MassConvert, VolumeConvert, LenghtConvert } = require('./Scripts/ConvertionLibrary.js');
 const auth = require("./JSON/auth.json");
 
 
@@ -90,7 +90,10 @@ client.on("messageCreate",(msg)=>{
                    case "volume":
                     channel.send(VolumeConvert(conversion));
                     break;
-
+                   case "len":
+                   case "lenght":
+                    channel.send(LenghtConvert(conversion));
+                    break;
                    default:
                     channel.send("thats not a type buddy >w<");
                }
