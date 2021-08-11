@@ -1,10 +1,11 @@
+//Made with love <3 Catdotjs 2021
 const {Client, Intents, MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const {randomInt} = require('crypto');
 const axios = require("axios");
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
 
-const { TemperatureConvert, AngleConvert, TimeConvert, MassConvert, VolumeConvert } = require('./Scripts/ConvertionApi.js');
+const { TemperatureConvert, AngleConvert, TimeConvert, MassConvert, VolumeConvert } = require('./Scripts/ConvertionLibrary.js');
 const auth = require("./JSON/auth.json");
 
 
