@@ -113,7 +113,7 @@ module.exports = {
            case "k":
             return "``"+toConvert+" Kelvin`` is **"+(toConvert-273.15).toFixed(precision)+" Celsius** and **"+(((toConvert-273.15)*1.8)+32).toFixed(precision)+" Fahrenheit**";
            case "f":
-            return "``"+toConvert+" Fahrenheit`` is **"+(toConvert-273.15).toFixed(precision)+" Celsius** and **"+(((toConvert-273.15)*1.8)+32).toFixed(precision)+" Kelvin**";
+            return "``"+toConvert+" Fahrenheit`` is **"+((toConvert-32)/1.8).toFixed(precision)+" Celsius** and **"+(((toConvert-32)/1.8)+273.15).toFixed(precision)+" Kelvin**";
            default:
             return `unit is wrong or missing >m<!
             ->For Temperature: **C**, **K** and **F** are allowed.`;
