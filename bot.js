@@ -4,13 +4,13 @@ const {randomInt} = require('crypto');
 const axios = require("axios");
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
-
-const { TemperatureConvert, AngleConvert, TimeConvert, MassConvert, VolumeConvert, LenghtConvert } = require('./Scripts/ConvertionLibrary.js');
+const { TemperatureConvert, AngleConvert, TimeConvert, MassConvert, VolumeConvert, LengthConvert } = require('./Scripts/ConvertionLibrary.js');
 const auth = require("./JSON/auth.json");
-
 
 const prefix = "katt ";
 const petBattleHowToPlayImg = "Images/how-to-play.png";
+
+let match = {};
 
 client.on("ready",()=>{
     console.log(`Logged in as ${client.user.tag}!`);
@@ -91,11 +91,11 @@ client.on("messageCreate",(msg)=>{
                     channel.send(VolumeConvert(conversion));
                     break;
                    case "len":
-                   case "lenght":
-                    channel.send(LenghtConvert(conversion));
+                   case "length":
+                    channel.send(LengthConvert(conversion));
                     break;
                    default:
-                    channel.send("thats not a type buddy >w<");
+                    channel.send("thats not a type buddy >w<\n->you can convert with **temperature, angle, time, mass, volume** and **length**");
                }
             break;
 
@@ -117,12 +117,26 @@ client.on("messageCreate",(msg)=>{
                .setLabel('How to play')
                .setStyle("PRIMARY")
                );
-               channel.send({content:`Do you want to pet battle with ${client.user}? ${authorTag}(60 second to respond)`,components:[actions]});
+
+               channel.send("pet battle is currently being worked on. Sorry :(");
+               /*
+               channel.send({content:`Do you want to pet battle with ${client.user}? ${authorTag}(60 second to respond)`,components:[actions]})
+               .then(message => {
+                setTimeout(() =>{
+                message.edit({content:"Pet battle timed out :(",components:[]})
+                },60000)
+               });
+               */
+            break;
+            
+            case "info":
+            case "help":
+               channel.send(`Made with love by <@!607952795794145281>!\nVersion __**1.0**__\nPrefix **"${prefix}"**\nCommands\n->**hello/hi** - says hi to bot\n->**dict/def/define** - defines a word\n->**convert/conv** - Converts units\n->**petb/petbattle** - a battle against the bot!`);
             break;
         }
     }
 });
-
+/*
 client.on("interactionCreate",async (interaction)=>{
     if(interaction.isButton){
         let userData = interaction.user; //has id,bot status,name,discriminator
@@ -132,11 +146,11 @@ client.on("interactionCreate",async (interaction)=>{
         //await interaction.update("abc");
         switch(interaction.customId){
             case "petB_Proceed":
-                channel.send(`Lets battle! <@!${userData.id}>`);
+                interaction.update(`Lets battle <@!${userData.id}>!`);
             break;
 
             case "petB_Cancel":
-            interaction.update({content:`Pet Battle has been cancelled D:`});
+                interaction.update({content:`Pet Battle has been cancelled D:`,components:[]});
             break;
 
             case "petB_HowToPlay":
@@ -152,14 +166,15 @@ client.on("interactionCreate",async (interaction)=>{
                     .setStyle('DANGER')
                     );
                 interaction.update({content:`Do you want to pet battle with ${client.user}? <@!${userData.id}>`,components:[actions]});
-                interaction.followUp(`here is how to play <@!${userData.id}>\nhttps://media.discordapp.net/attachments/737848885875310633/874850499772444722/how-to-play.png?width=1190&height=670`);
-                //interaction.reply({content:`here is how to play <@!${userData.id}>`,files:[petBattleHowToPlayImg]});
+                channel.sendTyping();
+                //interaction.followUp(`here is how to play <@!${userData.id}>\nhttps://media.discordapp.net/attachments/737848885875310633/874850499772444722/how-to-play.png?width=1190&height=670`);
+                interaction.followUp({content:`Here is how to play <@!${userData.id}>`,files:[petBattleHowToPlayImg]});
             break;
 
         }
     }
 });
-
+*/
 String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }

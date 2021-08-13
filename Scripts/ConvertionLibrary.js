@@ -94,7 +94,7 @@ function UnitName(name){
         return "Year";
     }
 }
-const precision = 4;
+const precision = 3;
 const numbFormat = new Intl.NumberFormat('en-US', { maximumFractionDigits: precision });
 module.exports = {
     TemperatureConvert : function(convert){
@@ -135,9 +135,9 @@ module.exports = {
 
     TimeConvert : function(convert){
         const timeUnits = ["ms","s","mn","h","d","w","mo","y"];
-        if(timeUnits.includes(convert)) {
+        let unit = convert.replace(/[ -9]/g,'');
+        if(timeUnits.includes(unit)) {
             let toConvert = parseFloat(parseFloat(convert.replace(/[a-z,A-Z, ]/g,"")));
-            let unit = convert.replace(/[ -9]/g,'');
             let returnText = "``"+toConvert+" "+UnitName(unit)+"(s)`` is\n";
 
             switch(unit){
@@ -304,7 +304,7 @@ module.exports = {
         return returnText;
     },
 
-    LenghtConvert : function(convert){
+    LengthConvert : function(convert){
         const metric = ["cm","m","km"];
         const imperial = ['in',"ft","ya"];
 
