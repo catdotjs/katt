@@ -131,7 +131,7 @@ client.on("messageCreate",(msg)=>{
             
             case "info":
             case "help":
-               channel.send(`Made with love by <@!607952795794145281>!\nVersion __**1.0**__\nPrefix **"${prefix}"**\nCommands\n->**hello/hi** - says hi to bot\n->**dict/def/define** - defines a word\n->**convert/conv** - Converts units\n->**petb/petbattle** - a battle against the bot!`);
+               channel.send(`Made with love by <@!607952795794145281>!(Thank you mx. Kae[https://voxelfox.co.uk/] for hosting ${client.user} <3)\nVersion __**1.0**__\nPrefix **"${prefix}"**\nCommands\n->**hello/hi** - says hi to bot\n->**dict/def/define** - defines a word\n->**convert/conv** - Converts units\n->**petb/petbattle** - a battle against the bot!`);
             break;
         }
     }
