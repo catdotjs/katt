@@ -10,11 +10,6 @@ const auth = require("./JSON/auth.json");
 const prefix = "katt ";
 const petBattleHowToPlayImg = "Images/how-to-play.png";
 
-var dictEmbed = new MessageEmbed()
-.setFooter('Dictionary used - merriam-webster.com')
-.setTimestamp();
-
-
 client.on("ready",()=>{
     console.log(`Logged in as ${client.user.tag}!`);
 });
@@ -43,16 +38,23 @@ client.on("messageCreate",(msg)=>{
                let define = msgArgs[1]+(msgArgs[2]==undefined?"":msgArgs[2]);
                 if(define){
                     axios.get(`https://dictionaryapi.com/api/v3/references/collegiate/json/${define}?key=${auth.dictKey}`).then(response => {
-                        var resp = response.data[0]; //HTTP get data
-                        var word = resp.hwi.hw;
-                        var phonetic = resp.hwi.prs[0].mw;
-                        var type = resp.fl;
-                        var meanings = resp.shortdef;
-                        if(resp.meta.offensive == false){
-                            dictEmbed.setTitle(`${define.capitalize()} [${phonetic}] - ${type}`)
-                            .setColor(createColour(randomInt(0,256),randomInt(0,256),randomInt(0,256)))
-                            for(i=0;i<meanings.length;i++){
-                                dictEmbed.addField(`meaning ${i+1}`, meanings[i].capitalize(), false);
+                        var resp = response.data; //HTTP get data
+                        var phonetic = resp[0].hwi.prs[0].mw;
+
+                        if(resp[0].meta.offensive == false){
+                            var dictEmbed = new MessageEmbed()
+                            .setTitle(`${define.capitalize()} [${phonetic}]`)
+                            .setColor(createColour(randomInt(0,255),randomInt(0,255),randomInt(0,255)))
+                            .setFooter('Dictionary used - merriam-webster.com')
+                            .setTimestamp();
+
+                            for(e=0;e<resp.length;e++){
+                                if(resp[e].meta.id.includes(`${define.toLowerCase()}:`)){
+                                    meanings = resp[e].shortdef;
+                                    for(i=0;i<meanings.length;i++){
+                                        dictEmbed.addField(`${resp[e].fl.capitalize()}`, meanings[i].capitalize(), false);
+                                    }
+                                }
                             }
                             channel.send({embeds: [dictEmbed]});
                         }else{
