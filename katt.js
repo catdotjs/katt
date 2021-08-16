@@ -168,7 +168,7 @@ client.on("messageCreate",(msg)=>{
 
             case "info":
             case "help":
-               channel.send(`Made with love by <@!607952795794145281>!(Thank you mx. Kae[https://voxelfox.co.uk/] for hosting ${client.user}v1.0 <3)\nV__**1.1**__ - Prefix:**"${prefix}"**\nCommands\n->**hello/hi** - says hi to bot\n->**dict/def/define** - defines a word\n->**convert/conv** - Converts units\n->**petb/petbattle** - a battle against the bot!`);
+               channel.send(`Made with love by <@!607952795794145281>!(Thank you mx. Kae[https://voxelfox.co.uk/] for hosting ${client.user}v1.0 <3)\nV__**1.1**__ - Prefix:**"${prefix}"**\nCommands\n->**hello/hi** - Says hi to bot\n->**dict/def/define** - Defines a word\n->**convert/conv** - Converts units\n->**petb/petbattle** - A battle against the bot!\n->**sc/spellcheck** - Guesses the word you tried to spell\n->**latest/update** - Gives info about latest update`);
             break;
         }
     }
