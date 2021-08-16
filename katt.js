@@ -166,9 +166,13 @@ client.on("messageCreate",(msg)=>{
 
             break;
 
+            case "vote":
+               channel.send({content:`${client.user} does not have voting(I don't plan to add), instead please vote or try these bots by talented people.\nMarriage Bot(<https://top.gg/bot/468281173072805889>) and Flower Bot(<https://top.gg/bot/731736201400418314>) from Voxel Fox\nPP bot(<https://top.gg/bot/735147633076863027>) from slippery schlöpp\nStalker bot(<https://top.gg/bot/723813550136754216/>) from Hero`});
+            break;
+
             case "info":
             case "help":
-               channel.send(`Made with love by <@!607952795794145281>!(Thank you mx. Kae[https://voxelfox.co.uk/] for hosting ${client.user}v1.0 <3)\nV__**1.1**__ - Prefix:**"${prefix}"**\nCommands\n->**hello/hi** - Says hi to bot\n->**dict/def/define** - Defines a word\n->**convert/conv** - Converts units\n->**petb/petbattle** - A battle against the bot!\n->**sc/spellcheck** - Guesses the word you tried to spell\n->**latest/update** - Gives info about latest update`);
+               channel.send(`Made with love by <@!607952795794145281>!(Thank you mx. Kae[https://voxelfox.co.uk/] for hosting ${client.user}v1.0 <3)\nV__**1.1**__ - Prefix:**"${prefix}"**\nCommands\n->**hello/hi** - Says hi to bot\n->**dict/def/define** - Defines a word\n->**convert/conv** - Converts units\n->**petb/petbattle** - A battle against the bot!\n->**sc/spellcheck** - Guesses the word you tried to spell\n->**latest/update** - Gives info about latest update\n->**vote** - Vote for ${client.user}`);
             break;
         }
     }
