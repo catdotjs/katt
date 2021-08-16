@@ -2,15 +2,15 @@
 const {Client, Intents, MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const {randomInt} = require('crypto');
 const axios = require("axios");
+const spellchecker = require("spellchecker");
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+
 
 const { TemperatureConvert, AngleConvert, TimeConvert, MassConvert, VolumeConvert, LengthConvert } = require('./Scripts/ConvertionLibrary.js');
 const auth = require("./JSON/auth.json");
 
 const prefix = "katt ";
 const petBattleHowToPlayImg = "Images/how-to-play.png";
-
-let match = {};
 
 client.on("ready",()=>{
     console.log(`Logged in as ${client.user.tag}!`);
@@ -34,28 +34,39 @@ client.on("messageCreate",(msg)=>{
             case "define":
                 /*
                 * Define command. Calls an dictionary api and returns result
-                * msgArgs ---------->[0]-->[1]-->[2]
-                * example : "Katt def Hello tr" (msgArgs[2] is optional)
+                * msgArgs ---------->[0]-->[1]-->[2]...
+                * example : "Katt def uh oh" -> "uh-oh"
                 */
-                if(msgArgs[1]){
-                    axios.get("https://api.dictionaryapi.dev/api/v2/entries/"+(msgArgs[2] || "en")+"/"+msgArgs[1]).then(response => {
-                            var resp = response.data[0]; //HTTP get data
-                            var meanings = resp.meanings; //Array of meanings
+               let define = msgArgs[1]+(msgArgs[2]==undefined?"":msgArgs[2]);
+                if(define){
+                    axios.get(`https://dictionaryapi.com/api/v3/references/collegiate/json/${define}?key=${auth.dictKey}`).then(response => {
+                        var resp = response.data; //HTTP get data
+                        var phonetic = resp[0].hwi.prs[0].mw;
+
+                        if(resp[0].meta.offensive == false){
                             var dictEmbed = new MessageEmbed()
-                            .setColor(createColour(randomInt(0,256),randomInt(0,256),randomInt(0,256)))
-	                        .setTitle(resp.word.capitalize()+" ("+resp.phonetic+")")
-	                        .setFooter('Dictionary used - dictionaryapi.dev')
+                            .setTitle(`${define.capitalize()} [${phonetic}]`)
+                            .setColor(createColour(randomInt(0,255),randomInt(0,255),randomInt(0,255)))
+                            .setFooter('Dictionary used - merriam-webster.com')
                             .setTimestamp();
 
-                            for(i=0;i<meanings.length;i++){
-                                dictEmbed.addField(meanings[i].partOfSpeech.capitalize(), meanings[i].definitions[0].definition, false);
+                            for(e=0;e<resp.length;e++){
+                                if(resp[e].meta.id.includes(`${define.toLowerCase()}:`) || e==0){
+                                    meanings = resp[e].shortdef;
+                                    for(i=0;i<meanings.length;i++){
+                                        dictEmbed.addField(`${resp[e].fl.capitalize()}`, meanings[i].capitalize(), false);
+                                    }
+                                }
                             }
                             channel.send({embeds: [dictEmbed]});
+                        }else{
+                            channel.send("This word has been flagged as offensive. Please do not lookup offensive words :(");
+                        }
                         }).catch((err)=>{
-                            channel.send(`${authorTag} thats not a word you silly goose!(orrr language you want is not supported >.>)`);
+                            channel.send(`${authorTag}, thats not a word you silly goose!`);
                         });
                 }else{
-                    channel.send(`${authorTag} missing a word pal!`);
+                    channel.send(`${authorTag}, I need a word to define <:chihiro_think:859405609303932958>`);
                 }
             break;
             
@@ -129,9 +140,35 @@ client.on("messageCreate",(msg)=>{
                */
             break;
             
+            case "update":
+            case "latest":
+               channel.send(`v1.1
+               -> every command works with multiple spacing
+               -> Dictionary api has been changed to merriam-webster's api
+               -> Latest/Update - Shows last update
+               -> sc/spellcheck command - guesses closest spelling`);
+            break;
+
+            case "sc":
+            case "spellcheck":
+               /*
+               *  spellchecks
+               *  msgArgs -->[0]-->[1]-->[2]...
+               *  example : "katt sc hello" 
+               */
+              //check grammar here
+               word = msgArgs[1]+(msgArgs[2]||"")
+               if(spellchecker.isMisspelled(word)){
+                channel.send("Is the word you were trying to spell one of the following?\n"+spellchecker.getCorrectionsForMisspelling(word));
+               }else{
+                channel.send("Word has been spelled correctly");
+               }
+
+            break;
+
             case "info":
             case "help":
-               channel.send(`Made with love by <@!607952795794145281>!(Thank you mx. Kae[https://voxelfox.co.uk/] for hosting ${client.user} <3)\nVersion __**1.0**__\nPrefix **"${prefix}"**\nCommands\n->**hello/hi** - says hi to bot\n->**dict/def/define** - defines a word\n->**convert/conv** - Converts units\n->**petb/petbattle** - a battle against the bot!`);
+               channel.send(`Made with love by <@!607952795794145281>!(Thank you mx. Kae[https://voxelfox.co.uk/] for hosting ${client.user}v1.0 <3)\nV__**1.1**__ - Prefix:**"${prefix}"**\nCommands\n->**hello/hi** - says hi to bot\n->**dict/def/define** - defines a word\n->**convert/conv** - Converts units\n->**petb/petbattle** - a battle against the bot!`);
             break;
         }
     }
