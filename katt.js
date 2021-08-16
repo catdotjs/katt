@@ -2,7 +2,9 @@
 const {Client, Intents, MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const {randomInt} = require('crypto');
 const axios = require("axios");
+const spellchecker = require("spellchecker");
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+
 
 const { TemperatureConvert, AngleConvert, TimeConvert, MassConvert, VolumeConvert, LengthConvert } = require('./Scripts/ConvertionLibrary.js');
 const auth = require("./JSON/auth.json");
@@ -49,7 +51,7 @@ client.on("messageCreate",(msg)=>{
                             .setTimestamp();
 
                             for(e=0;e<resp.length;e++){
-                                if(resp[e].meta.id.includes(`${define.toLowerCase()}:`)){
+                                if(resp[e].meta.id.includes(`${define.toLowerCase()}:`) || e==0){
                                     meanings = resp[e].shortdef;
                                     for(i=0;i<meanings.length;i++){
                                         dictEmbed.addField(`${resp[e].fl.capitalize()}`, meanings[i].capitalize(), false);
@@ -138,6 +140,32 @@ client.on("messageCreate",(msg)=>{
                */
             break;
             
+            case "update":
+            case "latest":
+               channel.send(`v1.1
+               -> every command works with multiple spacing
+               -> Dictionary api has been changed to merriam-webster's api
+               -> Latest/Update - Shows last update
+               -> sc/spellcheck command - guesses closest spelling`);
+            break;
+
+            case "sc":
+            case "spellcheck":
+               /*
+               *  spellchecks
+               *  msgArgs -->[0]-->[1]-->[2]...
+               *  example : "katt sc hello" 
+               */
+              //check grammar here
+               word = msgArgs[1]+(msgArgs[2]||"")
+               if(spellchecker.isMisspelled(word)){
+                channel.send("Is the word you were trying to spell one of the following?\n"+spellchecker.getCorrectionsForMisspelling(word));
+               }else{
+                channel.send("Word has been spelled correctly");
+               }
+
+            break;
+
             case "info":
             case "help":
                channel.send(`Made with love by <@!607952795794145281>!(Thank you mx. Kae[https://voxelfox.co.uk/] for hosting ${client.user}v1.0 <3)\nV__**1.1**__ - Prefix:**"${prefix}"**\nCommands\n->**hello/hi** - says hi to bot\n->**dict/def/define** - defines a word\n->**convert/conv** - Converts units\n->**petb/petbattle** - a battle against the bot!`);
