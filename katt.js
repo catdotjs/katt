@@ -1,5 +1,5 @@
 //Made with love <3 Catdotjs 2021
-const {Client, Intents, MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
+const {Client, Intents, MessageEmbed, MessageActionRow, MessageButton, MessageSelectMenu, Guild, GuildMember } = require('discord.js');
 const {randomInt} = require('crypto');
 const axios = require("axios");
 const spellchecker = require("spellchecker");
@@ -73,7 +73,7 @@ client.on("messageCreate",(msg)=>{
             case "convert":
             case "conv":
                 /*
-                * For now only Temp conversion is possible
+                * everything is convertable!
                 * msgArgs ---------->[0]--->[1]--->[2]
                 * example : "katt conv temp 20c"
                 */
@@ -159,7 +159,13 @@ client.on("messageCreate",(msg)=>{
               //check grammar here
                word = msgArgs[1]+(msgArgs[2]||"")
                if(spellchecker.isMisspelled(word)){
-                channel.send("Is the word you were trying to spell one of the following?\n"+spellchecker.getCorrectionsForMisspelling(word));
+                let correctSpellings = spellchecker.getCorrectionsForMisspelling(word);
+                correctSpellingsJson = [];
+                for(i=0;i<correctSpellings.length;i++){
+                    correctSpellingsJson[i]={label:correctSpellings[i],value:'sc_'+i};
+                }
+                let dropDownSpellings = new MessageActionRow().addComponents(new MessageSelectMenu().setCustomId('SpellCheck').setPlaceholder('Select the correct spelling').addOptions(correctSpellingsJson),);
+                channel.send({content:"Is the word you were trying to spell one of the following?\n",components:[dropDownSpellings]});
                }else{
                 channel.send("Word has been spelled correctly");
                }
@@ -168,6 +174,34 @@ client.on("messageCreate",(msg)=>{
 
             case "vote":
                channel.send({content:`${client.user} does not have voting(I don't plan to add), instead please vote or try these bots by talented people.\nMarriage Bot(<https://top.gg/bot/468281173072805889>) and Flower Bot(<https://top.gg/bot/731736201400418314>) made by Voxel Fox(Kae)\nPP bot(<https://top.gg/bot/735147633076863027>) made by slippery schlöpp\nStalker bot(<https://top.gg/bot/723813550136754216/>) made by Hero\nGhigeon bot(<https://top.gg/bot/753013667460546560>) made by Medusa`});
+            break;
+
+            case "amen":
+               let amens = ["https://i.imgur.com/0UrWK1M.png","https://i.imgur.com/g58cF1G.png","https://i.imgur.com/G13wPru.png"];
+               channel.send(amens[randomInt(0,amens.length)]);
+            break;
+
+            case "dad":
+            case "joke":
+            axios.get('https://us-central1-dadsofunny.cloudfunctions.net/DadJokes/random/type/general').then(response => {
+                channel.send(response.data[0].setup);
+                channel.sendTyping();
+                setTimeout(()=>channel.send(response.data[0].punchline),3000);
+            });
+            break;
+
+            case "pp":
+                channel.send("I'm in love with pp bot. Pp bot is so hot and attractive and also my older sibling");
+            break;
+
+            case "stab":
+                /*
+                *       stab command
+                * msgArgs ---------->[0]--->[1]
+                * example : "katt stab @user"   
+                */
+                if(channel.guildMembers())
+               channel.send()
             break;
 
             case "info":
