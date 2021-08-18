@@ -167,7 +167,7 @@ client.on("messageCreate",(msg)=>{
             break;
 
             case "vote":
-               channel.send({content:`${client.user} does not have voting(I don't plan to add), instead please vote or try these bots by talented people.\nMarriage Bot(<https://top.gg/bot/468281173072805889>) and Flower Bot(<https://top.gg/bot/731736201400418314>) from Voxel Fox\nPP bot(<https://top.gg/bot/735147633076863027>) from slippery schlöpp\nStalker bot(<https://top.gg/bot/723813550136754216/>) from Hero`});
+               channel.send({content:`${client.user} does not have voting(I don't plan to add), instead please vote or try these bots by talented people.\nMarriage Bot(<https://top.gg/bot/468281173072805889>) and Flower Bot(<https://top.gg/bot/731736201400418314>) made by Voxel Fox(Kae)\nPP bot(<https://top.gg/bot/735147633076863027>) made by slippery schlöpp\nStalker bot(<https://top.gg/bot/723813550136754216/>) made by Hero\nGhigeon bot(<https://top.gg/bot/753013667460546560>) made by Medusa`});
             break;
 
             case "info":
