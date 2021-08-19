@@ -1,3 +1,4 @@
 discord.js - https://www.npmjs.com/package/discord.js
 axios - https://www.npmjs.com/package/axios
 spellchecker - https://www.npmjs.com/package/spellchecker
+discord.js-search - https://www.npmjs.com/package/discord.js-search

@@ -3,11 +3,15 @@ const {Client, Intents, MessageEmbed, MessageActionRow, MessageButton, MessageSe
 const {randomInt} = require('crypto');
 const axios = require("axios");
 const spellchecker = require("spellchecker");
+const search = require("discord.js-search");
+const fs = require('fs');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
 
 const { TemperatureConvert, AngleConvert, TimeConvert, MassConvert, VolumeConvert, LengthConvert } = require('./Scripts/ConvertionLibrary.js');
 const auth = require("./JSON/auth.json");
+const meowMessages = require("./JSON/messages.json");
+const { time } = require('console');
 
 const prefix = "katt ";
 const petBattleHowToPlayImg = "Images/how-to-play.png";
@@ -17,6 +21,7 @@ client.on("ready",()=>{
 });
 
 client.on("messageCreate",(msg)=>{
+    var currentGuildId = msg.channel.guildId;
     if(msg.content.toLowerCase().startsWith(prefix)){
         var authorTag = msg.author; //"<@![Author_id]>" | use this to tag
         var authorId = authorTag.id; //author's id
@@ -172,6 +177,22 @@ client.on("messageCreate",(msg)=>{
 
             break;
 
+            case "meow":
+                /*  channel.messages.fetch('877743585179627532').then(message => console.log(message.createdTimestamp)).catch(console.error);
+                *   Meow command - Lets you see when the user tagged or userid was active last time
+                *   example: "katt meow @kae#0004"
+                *   return: "Kae was last active at 03:24(UTC+02:00)am in 2021-08-19.\nThey've said '[message here]' as their latest message"
+                *
+                */
+                try{
+                let userTimestamp = meowMessages[currentGuildId].Users[msgArgs[1].slice(3, -1)][0];
+                let userMessageDate = new Date(userTimestamp);
+                channel.send(`last message at ${userMessageDate.getUTCFullYear()}-${userMessageDate.getMonth()}-${userMessageDate.getUTCDate()} at ${userMessageDate.getUTCHours()}:${userMessageDate.getUTCMinutes()}(UTC/GMT)`);
+                }catch{
+                channel.send(`We sadly cannot find any data about ${msgArgs[1]}, please make sure to mention the user(User might not be in our database yet!)\n->example:"katt meow @user"`);
+                }
+            break;
+
             case "vote":
                channel.send({content:`${client.user} does not have voting(I don't plan to add), instead please vote or try these bots by talented people.\nMarriage Bot(<https://top.gg/bot/468281173072805889>) and Flower Bot(<https://top.gg/bot/731736201400418314>) made by Voxel Fox(Kae)\nPP bot(<https://top.gg/bot/735147633076863027>) made by slippery schlöpp\nStalker bot(<https://top.gg/bot/723813550136754216/>) made by Hero\nGhigeon bot(<https://top.gg/bot/753013667460546560>) made by Medusa`});
             break;
@@ -194,14 +215,30 @@ client.on("messageCreate",(msg)=>{
                 channel.send("I'm in love with pp bot. Pp bot is so hot and attractive and also my older sibling");
             break;
 
+            
             case "stab":
                 /*
+                * REMAKE THIS YOU SILLY B*TCH
                 *       stab command
                 * msgArgs ---------->[0]--->[1]
                 * example : "katt stab @user"   
+                *
+                if(msgArgs[1]){
+                    if(msgArgs[1].slice(3, -1)==authorId){
+                        channel.send("You've stabbed yourself ._.");
+                    }else{
+                        if(msgArgs[1].startsWith("<@!")){
+                            channel.send(`${authorTag} has stabbed ${msgArgs[1]} Ouch `);
+                        }else if(msgArgs[1].startsWith("<&!")){
+                            channel.send("You can't stab a role! Its too many people to stab!");
+                        }else{
+                            channel.send("Please mention the user you want to staby staby.");
+                        }
+                    }
+                }else{
+                    channel.send("You've stabbed nothing... Mention someone to stab them");
+                }
                 */
-                if(channel.guildMembers())
-               channel.send()
             break;
 
             case "info":
@@ -210,6 +247,15 @@ client.on("messageCreate",(msg)=>{
             break;
         }
     }
+    if(meowMessages[currentGuildId]==undefined){
+        meowMessages[currentGuildId]={Users:[]};
+    }
+    meowMessages[currentGuildId].Users={[msg.author.id]:[msg.createdTimestamp,`${msg.channelId}/${msg.id}`]};
+    try{
+        fs.writeFileSync("JSON/messages.json",JSON.stringify(meowMessages));
+    }catch{
+        console.log("failed :(");
+    }     
 });
 /*
 client.on("interactionCreate",async (interaction)=>{
