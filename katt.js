@@ -248,7 +248,7 @@ client.on("messageCreate",(msg)=>{
 
             case "info":
             case "help":
-               channel.send(`Made with love by <@!607952795794145281>!(Thank you mx. Kae[https://voxelfox.co.uk/] for hosting ${client.user}v1.0 <3)\nV__**1.2**__ - Prefix:**"${prefix}"**\nCommands\n->**hello/hi** - says hi to bot\n->**dict/def/define** - defines a word\n->**convert/conv** - Converts units\n->**petb/petbattle** - a battle against the bot!\n->**amen** - Shows dumbass memes I made\n->**dad/joke** - Makes dad jokes\n->**meow** - See last message sent by user and when it was sent\n->**topic** - Gives a random topic to talk about\n->**stab** - Ask <@!735147633076863027> to stab people\n->**pp** - <3`);
+               channel.send(`Made with love by <@!607952795794145281>!(Thank you mx. Kae[https://voxelfox.co.uk/] for hosting ${client.user}v1.0 <3)\nV__**1.2**__ - Prefix:**"${prefix}"**\nCommands\n->**hello/hi** - says hi to bot\n->**dict/def/define** - defines a word\n->**convert/conv** - Converts units\n->**petb/petbattle** - a battle against the bot!\n->**sc/spellcheck** - Spell check words!\n->**amen** - Shows dumbass memes I made\n->**dad/joke** - Makes dad jokes\n->**meow** - See last message sent by user and when it was sent\n->**topic** - Gives a random topic to talk about\n->**stab** - Ask <@!735147633076863027> to stab people\n->**pp** - <3`);
             break;
         }
     }
