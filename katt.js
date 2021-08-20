@@ -184,17 +184,16 @@ client.on("messageCreate",(msg)=>{
                 *   Meow command - Lets you see when the user tagged or userid was active last time
                 *   example: "katt meow @kae#0004"
                 *   return: "Kae was last active at 03:24(UTC+02:00)am in 2021-08-19.\nThey've said '[message here]' as their latest message"
-                *
                 */
-                //try{
+                try{
                 let userMeowData = meowMessages[currentGuildId].Users[msgArgs[1].slice(3, -1)];
                 let userTimestamp = userMeowData[0];
                 let userMessageDate = new Date(userTimestamp).toISOString();
                 let userMessageContent = userMeowData[1];
                 channel.send(`${msgArgs[1]} was last active at ${userMessageDate.slice(0, -14)} ${userMessageDate.slice(11, -8)}(UTC/GMT)\nThey've said "${userMessageContent}"`);
-                //}catch{
-                //channel.send(`We sadly cannot find any data about ${msgArgs[1]}, please make sure to mention the user(User might not be in our database yet!)\n->example:"katt meow @user"`);
-                //}
+                }catch{
+                channel.send(`We sadly cannot find any data about ${msgArgs[1]}, please make sure to mention the user(User might not be in our database yet!)\n->example:"katt meow @user"`);
+                }
             break;
 
             case "vote":
