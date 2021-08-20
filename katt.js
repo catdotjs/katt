@@ -187,13 +187,14 @@ client.on("messageCreate",(msg)=>{
                 *   return: "Kae was last active at 03:24(UTC+02:00)am in 2021-08-19.\nThey've said '[message here]' as their latest message"
                 */
                 try{
-                let userMeowData = meowMessages[currentGuildId].Users[msgArgs[1].slice(3, -1)];
+                let userId = msgArgs[1].startsWith('<@!')?msgArgs[1].slice(3, -1):msgArgs[1];
+                let userMeowData = meowMessages[currentGuildId].Users[userId];
                 let userTimestamp = userMeowData[0];
                 let userMessageDate = new Date(userTimestamp).toISOString();
                 let userMessageContent = userMeowData[1];
-                channel.send(`${msgArgs[1]} was last active at ${userMessageDate.slice(0, -14)} ${userMessageDate.slice(11, -8)}(UTC/GMT)\nThey've said "${userMessageContent}"`);
+                channel.send(`<@!${userId}> was last active at ${userMessageDate.slice(0, -14)} ${userMessageDate.slice(11, -8)}(UTC/GMT)\nThey've said "${userMessageContent}"`);
                 }catch{
-                channel.send(`We sadly cannot find any data about ${msgArgs[1]}, please make sure to mention the user(User might not be in our database yet!)\n->example:"katt meow @user"`);
+                channel.send(`We sadly cannot find any data about <@!${userId}>, please make sure to mention the user(User might not be in our database yet!)\n->example:"katt meow @user"`);
                 }
             break;
 
