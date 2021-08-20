@@ -179,8 +179,9 @@ client.on("messageCreate",(msg)=>{
 
             break;
 
+
             case "meow":
-                /*  channel.messages.fetch('877743585179627532').then(message => console.log(message.createdTimestamp)).catch(console.error);
+                /*  
                 *   Meow command - Lets you see when the user tagged or userid was active last time
                 *   example: "katt meow @kae#0004"
                 *   return: "Kae was last active at 03:24(UTC+02:00)am in 2021-08-19.\nThey've said '[message here]' as their latest message"
