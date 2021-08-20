@@ -3,7 +3,6 @@ const {Client, Intents, MessageEmbed, MessageActionRow, MessageButton, MessageSe
 const {randomInt} = require('crypto');
 const axios = require("axios");
 const spellchecker = require("spellchecker");
-const search = require("discord.js-search");
 const fs = require('fs');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
@@ -11,6 +10,7 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_
 const { TemperatureConvert, AngleConvert, TimeConvert, MassConvert, VolumeConvert, LengthConvert } = require('./Scripts/ConvertionLibrary.js');
 const auth = require("./JSON/auth.json");
 const meowMessages = require("./JSON/messages.json");
+const topics = require("./JSON/topics.json");
 const { time } = require('console');
 
 const prefix = "katt ";
@@ -24,14 +24,13 @@ client.on("messageCreate",(msg)=>{
     var currentGuildId = msg.channel.guildId;
     if(msg.content.toLowerCase().startsWith(prefix)){
         var authorTag = msg.author; //"<@![Author_id]>" | use this to tag
-        var authorId = authorTag.id; //author's id
         var msgArgs = msg.content.toLowerCase().replace(prefix,"").split(" "); //prefix removed
         var channel = msg.channel;
+        channel.sendTyping();
         switch(msgArgs[0].toLowerCase()){ //this is second part "katt [command]""
             case "hi":
             case "hello":
                 channel.send(`Hi, ${authorTag}!!!`);
-                
             break;
 
             case "dict":
@@ -147,11 +146,14 @@ client.on("messageCreate",(msg)=>{
             
             case "update":
             case "latest":
-               channel.send(`v1.1
-               -> every command works with multiple spacing
-               -> Dictionary api has been changed to merriam-webster's api
-               -> Latest/Update - Shows last update
-               -> sc/spellcheck command - guesses closest spelling`);
+               channel.send(`v1.2
+-> pp command - <3
+-> Drop down menu for spellcheck
+-> dad command  - makes dad jokes
+-> katt amen - shows a dumbass meme I made
+-> stab command - stabs someone as pp bot 
+-> topics command - gives a random topic 
+-> Meow command - Shows last time a user was active on current server`);
             break;
 
             case "sc":
@@ -167,10 +169,10 @@ client.on("messageCreate",(msg)=>{
                 let correctSpellings = spellchecker.getCorrectionsForMisspelling(word);
                 correctSpellingsJson = [];
                 for(i=0;i<correctSpellings.length;i++){
-                    correctSpellingsJson[i]={label:correctSpellings[i],value:'sc_'+i};
+                    correctSpellingsJson[i]={label:correctSpellings[i],value:'sc_'+correctSpellings[i]};
                 }
                 let dropDownSpellings = new MessageActionRow().addComponents(new MessageSelectMenu().setCustomId('SpellCheck').setPlaceholder('Select the correct spelling').addOptions(correctSpellingsJson),);
-                channel.send({content:"Is the word you were trying to spell one of the following?\n",components:[dropDownSpellings]});
+                channel.send({content:"Is the word you were trying to spell one of the following?",components:[dropDownSpellings]});
                }else{
                 channel.send("Word has been spelled correctly");
                }
@@ -184,13 +186,15 @@ client.on("messageCreate",(msg)=>{
                 *   return: "Kae was last active at 03:24(UTC+02:00)am in 2021-08-19.\nThey've said '[message here]' as their latest message"
                 *
                 */
-                try{
-                let userTimestamp = meowMessages[currentGuildId].Users[msgArgs[1].slice(3, -1)][0];
-                let userMessageDate = new Date(userTimestamp);
-                channel.send(`last message at ${userMessageDate.getUTCFullYear()}-${userMessageDate.getMonth()}-${userMessageDate.getUTCDate()} at ${userMessageDate.getUTCHours()}:${userMessageDate.getUTCMinutes()}(UTC/GMT)`);
-                }catch{
-                channel.send(`We sadly cannot find any data about ${msgArgs[1]}, please make sure to mention the user(User might not be in our database yet!)\n->example:"katt meow @user"`);
-                }
+                //try{
+                let userMeowData = meowMessages[currentGuildId].Users[msgArgs[1].slice(3, -1)];
+                let userTimestamp = userMeowData[0];
+                let userMessageDate = new Date(userTimestamp).toISOString();
+                let userMessageContent = userMeowData[1];
+                channel.send(`${msgArgs[1]} was last active at ${userMessageDate.slice(0, -14)} ${userMessageDate.slice(11, -8)}(UTC/GMT)\nThey've said "${userMessageContent}"`);
+                //}catch{
+                //channel.send(`We sadly cannot find any data about ${msgArgs[1]}, please make sure to mention the user(User might not be in our database yet!)\n->example:"katt meow @user"`);
+                //}
             break;
 
             case "vote":
@@ -206,7 +210,7 @@ client.on("messageCreate",(msg)=>{
             case "joke":
             axios.get('https://us-central1-dadsofunny.cloudfunctions.net/DadJokes/random/type/general').then(response => {
                 channel.send(response.data[0].setup);
-                channel.sendTyping();
+                setTimeout(()=>channel.sendTyping(),100);
                 setTimeout(()=>channel.send(response.data[0].punchline),3000);
             });
             break;
@@ -214,52 +218,48 @@ client.on("messageCreate",(msg)=>{
             case "pp":
                 channel.send("I'm in love with pp bot. Pp bot is so hot and attractive and also my older sibling");
             break;
-
             
             case "stab":
                 /*
-                * REMAKE THIS YOU SILLY B*TCH
+                * REMAKE THIS LATER
                 *       stab command
                 * msgArgs ---------->[0]--->[1]
                 * example : "katt stab @user"   
-                *
+                */
                 if(msgArgs[1]){
                     if(msgArgs[1].slice(3, -1)==authorId){
                         channel.send("You've stabbed yourself ._.");
                     }else{
                         if(msgArgs[1].startsWith("<@!")){
-                            channel.send(`${authorTag} has stabbed ${msgArgs[1]} Ouch `);
-                        }else if(msgArgs[1].startsWith("<&!")){
-                            channel.send("You can't stab a role! Its too many people to stab!");
+                            channel.send(`<@!735147633076863027> has stabbed ${msgArgs[1]} Ouch `);
                         }else{
-                            channel.send("Please mention the user you want to staby staby.");
+                            channel.send("Please mention the user you want <@!735147633076863027> to staby staby.");
                         }
                     }
                 }else{
-                    channel.send("You've stabbed nothing... Mention someone to stab them");
+                    channel.send("<@!735147633076863027> stabbed nothing... Mention someone for <@!735147633076863027> to stab!");
                 }
-                */
+                
+            break;
+            
+            case "topic":
+                channel.send(topics.Contents[randomInt(0,topics.Contents.length)]);
             break;
 
             case "info":
             case "help":
-               channel.send(`Made with love by <@!607952795794145281>!(Thank you mx. Kae[https://voxelfox.co.uk/] for hosting ${client.user}v1.0 <3)\nV__**1.1**__ - Prefix:**"${prefix}"**\nCommands\n->**hello/hi** - says hi to bot\n->**dict/def/define** - defines a word\n->**convert/conv** - Converts units\n->**petb/petbattle** - a battle against the bot!`);
+               channel.send(`Made with love by <@!607952795794145281>!(Thank you mx. Kae[https://voxelfox.co.uk/] for hosting ${client.user}v1.0 <3)\nV__**1.2**__ - Prefix:**"${prefix}"**\nCommands\n->**hello/hi** - says hi to bot\n->**dict/def/define** - defines a word\n->**convert/conv** - Converts units\n->**petb/petbattle** - a battle against the bot!\n->**amen** - Shows dumbass memes I made\n->**dad/joke** - Makes dad jokes\n->**meow** - See last message sent by user and when it was sent\n->**topic** - Gives a random topic to talk about\n->**stab** - Ask <@!735147633076863027> to stab people\n->**pp** - <3`);
             break;
         }
     }
-    if(meowMessages[currentGuildId]==undefined){
-        meowMessages[currentGuildId]={Users:[]};
-    }
-    meowMessages[currentGuildId].Users={[msg.author.id]:[msg.createdTimestamp,`${msg.channelId}/${msg.id}`]};
-    try{
-        fs.writeFileSync("JSON/messages.json",JSON.stringify(meowMessages));
-    }catch{
-        console.log("failed :(");
-    }     
+    var authorId = msg.author.id; 
+    if(meowMessages[currentGuildId]==undefined){meowMessages[currentGuildId]={Users:{}};}
+    meowMessages[currentGuildId].Users[authorId]=[msg.createdTimestamp,msg.content];
+    try{fs.writeFileSync("JSON/messages.json",JSON.stringify(meowMessages));}catch{console.log("failed :(");}
 });
-/*
+
 client.on("interactionCreate",async (interaction)=>{
-    if(interaction.isButton){
+    if(1=="a"){
         let userData = interaction.user; //has id,bot status,name,discriminator
         let guild = interaction.guild;
         let channel = interaction.channel;
@@ -294,8 +294,10 @@ client.on("interactionCreate",async (interaction)=>{
 
         }
     }
+    if(interaction.isSelectMenu){
+        interaction.reply("the correct spelling has been chosen");
+    }
 });
-*/
 String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
