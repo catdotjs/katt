@@ -190,11 +190,10 @@ client.on("messageCreate",(msg)=>{
                 try{
                 let userId = msgArgs[1].startsWith('<@!')?msgArgs[1].slice(3, -1):msgArgs[1];
                 let userMeowData = meowMessages[currentGuildId].Users[userId];
-                let userTimestamp = userMeowData[0];
-                let userMessageDate = new Date(userTimestamp).toISOString();
+                let userTimestamp = parseInt(userMeowData[0]/1000);
                 let userMessageContent = userMeowData[1];
                 let userName = client.users.cache.get(userId).username;
-                channel.send(`**${userName}** was last active at **${userMessageDate.slice(0, -14)} ${userMessageDate.slice(11, -8)}(UTC/GMT)**\nThey've said `+"``"+`${userMessageContent}`+"``");
+                channel.send(`**${userName}** was last active at <t:${userTimestamp}>\nThey've said `+"``"+`${userMessageContent}`+"``");
                 }catch{
                 channel.send(`We sadly cannot find any data about **${msgArgs[1]}**, please make sure to mention the user or put their userID(User might not be in our database yet!)\n->example:"katt meow @user"`);
                 }
