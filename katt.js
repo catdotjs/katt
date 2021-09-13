@@ -11,7 +11,6 @@ const { TemperatureConvert, AngleConvert, TimeConvert, MassConvert, VolumeConver
 const auth = require("./JSON/auth.json");
 const meowMessages = require("./JSON/messages.json");
 const topics = require("./JSON/topics.json");
-const { time } = require('console');
 
 const prefix = "katt ";
 const petBattleHowToPlayImg = "Images/how-to-play.png";
@@ -41,11 +40,15 @@ client.on("messageCreate",(msg)=>{
                 * msgArgs ---------->[0]-->[1]-->[2]...
                 * example : "Katt def uh oh" -> "uh-oh"
                 */
-               let define = msgArgs[1]+(msgArgs[2]==undefined?"":msgArgs[2]);
+               let define = msgArgs[1]+" "+(msgArgs[2]==undefined?"":msgArgs[2]);
                 if(define){
                     axios.get(`https://dictionaryapi.com/api/v3/references/collegiate/json/${define}?key=${auth.dictKey}`).then(response => {
                         var resp = response.data; //HTTP get data
-                        var phonetic = resp[0].hwi.prs[0].mw;
+                        try{
+                            var phonetic = resp[0].hwi.prs[0].mw;
+                        }catch(err){
+                            var phonetic = "Phonetic unavailable";
+                        }
 
                         if(resp[0].meta.offensive == false){
                             var dictEmbed = new MessageEmbed()
@@ -67,7 +70,7 @@ client.on("messageCreate",(msg)=>{
                             channel.send("This word has been flagged as offensive. Please do not lookup offensive words :(");
                         }
                         }).catch((err)=>{
-                            channel.send(`${authorTag}, thats not a word you silly goose!`);
+                            channel.send(`${authorTag}, using my big huge brain I checked my dictionary but sadly I couldn't find the word's definition D:`);
                         });
                 }else{
                     channel.send(`${authorTag}, I need a word to define <:chihiro_think:859405609303932958>`);
@@ -110,7 +113,7 @@ client.on("messageCreate",(msg)=>{
                     channel.send(LengthConvert(conversion));
                     break;
                    default:
-                    channel.send("thats not a type buddy >w<\n->you can convert with **temperature, angle, time, mass, volume** and **length**");
+                    channel.send("thats not a type buddy >w<\n->you can convert with **temperature(temp), angle(ang), time, mass, volume(vol)** and **length(len)**\nexample:``katt conv mass 10kg``");
                }
             break;
 
@@ -169,7 +172,7 @@ client.on("messageCreate",(msg)=>{
                 let correctSpellings = spellchecker.getCorrectionsForMisspelling(word);
                 correctSpellingsJson = [];
                 for(i=0;i<correctSpellings.length;i++){
-                    correctSpellingsJson[i]={label:correctSpellings[i],value:'sc_'+correctSpellings[i]};
+                    correctSpellingsJson[i]={label:correctSpellings[i],value:correctSpellings[i]};
                 }
                 let dropDownSpellings = new MessageActionRow().addComponents(new MessageSelectMenu().setCustomId('SpellCheck').setPlaceholder('Select the correct spelling').addOptions(correctSpellingsJson),);
                 channel.send({content:"Is the word you were trying to spell one of the following?",components:[dropDownSpellings]});
@@ -178,7 +181,6 @@ client.on("messageCreate",(msg)=>{
                }
 
             break;
-
 
             case "meow":
                 /*  
@@ -297,9 +299,14 @@ client.on("interactionCreate",async (interaction)=>{
         }
     }
     if(interaction.isSelectMenu){
-        interaction.reply("the correct spelling has been chosen");
+        switch(interaction.customId){
+            case "SpellCheck":
+            interaction.update({ content: '``'+interaction.values[0]+'`` is selected as correct spelling', components: [] });
+            break;
+        }
     }
 });
+
 String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
