@@ -365,7 +365,7 @@ module.exports = {
         }else{
         return `unit is wrong or missing >m<!
             ->For metric: **${metric[0]}**, **${metric[1]}** and **${metric[2]}** are allowed.
-            ->For imperial: **${imperial[0]}**, **${imperial[1]}** and **${imperial[2]}** are allowed.`;
+            ->For imperial: **${imperial[0]}**, **${imperial[1]}**, **${imperial[2]}** and **${imperial[3]}** are allowed.`;
         }
         return returnText;
     },
