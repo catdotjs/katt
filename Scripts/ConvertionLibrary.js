@@ -43,10 +43,13 @@ function UnitName(name){
         return "Inch";
 
         case "ft":
-        return "foot";
+        return "Foot";
 
         case "ya":
-        return "yard";
+        return "Yard";
+        
+        case "mi":
+        return "Mile"
         // Mass
         case "oz":
         return "Ounce";
@@ -306,7 +309,7 @@ module.exports = {
 
     LengthConvert : function(convert){
         const metric = ["cm","m","km"];
-        const imperial = ['in',"ft","ya"];
+        const imperial = ['in',"ft","ya","mi"];
 
         let unit = convert.replace(/[ -9]/g,'');
         let toConvert = parseFloat(convert.replace(/[a-z,A-Z, ]/g,""));
@@ -328,8 +331,9 @@ module.exports = {
 
             ft = inch/12;
             ya = ft/3;
+            mi=ya/1760
             
-            convertedNumbers = [inch,ft,ya];
+            convertedNumbers = [inch,ft,ya,mi];
 
             for(let i=0;i<convertedNumbers.length;i++){
                 returnText+=" **"+numbFormat.format(convertedNumbers[i].toFixed(precision))+" "+UnitName(imperial[i])+"(s)**";
@@ -346,6 +350,9 @@ module.exports = {
 
                 case imperial[2]:
                  cm = toConvert*91.44;
+
+                 case imperial[3]:
+                cm = toConvert*160934;
             }
             m = cm/100;
             km = m/1000;
