@@ -1,4 +1,5 @@
 const { Module } = require("module");
+const { parse } = require("path");
 //Made with love <3 Catdotjs 2021
 function UnitName(name){
     switch(name){
@@ -39,6 +40,7 @@ function UnitName(name){
 
         ///-----------Imperial-----------
         // Lenght
+        case "\'\"":
         case "in":
         return "Inch";
 
@@ -310,8 +312,9 @@ module.exports = {
     LengthConvert : function(convert){
         const metric = ["cm","m","km"];
         const imperial = ['in',"ft","ya","mi"];
+        const imperialSpecialCase = "\'\"";
 
-        let unit = convert.replace(/[ -9]/g,'');
+        let unit = convert.replace(/[(-9]/g,'');
         let toConvert = parseFloat(convert.replace(/[a-z,A-Z, ]/g,""));
         let returnText = "``"+toConvert+" "+UnitName(unit)+"(s)`` is";
 
@@ -327,18 +330,20 @@ module.exports = {
 
                 case metric[2]:
                  inch = toConvert*39370.1;
+                break;
             }
 
             ft = inch/12;
             ya = ft/3;
-            mi=ya/1760
-            
+            mi=ya/1760;
+
             convertedNumbers = [inch,ft,ya,mi];
 
             for(let i=0;i<convertedNumbers.length;i++){
                 returnText+=" **"+numbFormat.format(convertedNumbers[i].toFixed(precision))+" "+UnitName(imperial[i])+"(s)**";
             }
-        }else if(imperial.includes(unit)){
+            returnText+=" **"+Math.floor(ft)+"\'"+Math.floor(inch%12)+"\""+"**";
+        }else if(imperial.includes(unit)||imperialSpecialCase==unit){
             switch(unit){
                 case imperial[0]:
                  cm = toConvert*2.54;
@@ -350,9 +355,18 @@ module.exports = {
 
                 case imperial[2]:
                  cm = toConvert*91.44;
+                break;
 
-                 case imperial[3]:
-                cm = toConvert*160934;
+                case imperial[3]:
+                 cm = toConvert*160934;
+                break;
+
+                case imperialSpecialCase:
+                 ftin = convert.replace("\"","").split("\'");
+                 toConvert = (ftin[0]*12 + ftin[1]*1);
+                 returnText = "``"+toConvert+" "+UnitName(unit)+"(s)`` is";
+                 cm =  toConvert*2.54;
+                break;
             }
             m = cm/100;
             km = m/1000;
@@ -365,7 +379,7 @@ module.exports = {
         }else{
         return `unit is wrong or missing >m<!
             ->For metric: **${metric[0]}**, **${metric[1]}** and **${metric[2]}** are allowed.
-            ->For imperial: **${imperial[0]}**, **${imperial[1]}**, **${imperial[2]}** and **${imperial[3]}** are allowed.`;
+            ->For imperial: **${imperial[0]}**, **${imperial[1]}**, **${imperial[2]}** and **${imperial[3]}**(or **\'**(feet) and **\"**(inch) symbols) are allowed.`;
         }
         return returnText;
     },
