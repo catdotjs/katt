@@ -209,7 +209,7 @@ client.on("messageCreate",(msg)=>{
                let amens = ["https://i.imgur.com/0UrWK1M.png","https://i.imgur.com/g58cF1G.png","https://i.imgur.com/G13wPru.png"];
                channel.send(amens[randomInt(0,amens.length)]);
             break;
-
+            
             case "dad":
             case "joke":
             axios.get('https://us-central1-dadsofunny.cloudfunctions.net/DadJokes/random/type/general').then(response => {
@@ -250,9 +250,20 @@ client.on("messageCreate",(msg)=>{
                 channel.send(topics.Contents[randomInt(0,topics.Contents.length)]);
             break;
 
+            case "math":
+            case "calc":
+                msgArgs.shift();
+                let calculation = msgArgs.join("").replace(/[:-}]/g,'');
+                try{
+                    channel.send("**result:** "+eval(calculation));
+                }catch{
+                    channel.send("error! something went horribly wrong OmO");
+                }
+            break;
+
             case "info":
             case "help":
-               channel.send(`Made with love by <@!607952795794145281>!(Thank you mx. Kae[https://voxelfox.co.uk/] for hosting ${client.user}v1.0 <3)\nV__**1.2**__ - Prefix:**"${prefix}"**\nCommands\n->**hello/hi** - says hi to bot\n->**dict/def/define** - defines a word\n->**convert/conv** - Converts units\n->**petb/petbattle** - a battle against the bot!\n->**sc/spellcheck** - Spell check words!\n->**amen** - Shows dumbass memes I made\n->**dad/joke** - Makes dad jokes\n->**meow** - See last message sent by user and when it was sent\n->**topic** - Gives a random topic to talk about\n->**stab** - Ask <@!735147633076863027> to stab people\n->**pp** - <3`);
+               channel.send(`Made with love by <@!607952795794145281>!(Thank you mx. Kae[https://voxelfox.co.uk/] for hosting ${client.user}v1.0 <3)\nV__**1.2**__ - Prefix:**"${prefix}"**\nCommands\n->**hello/hi** - says hi to bot\n->**dict/def/define** - defines a word\n->**convert/conv** - Converts units\n->**petb/petbattle** - a battle against the bot!\n->**sc/spellcheck** - Spell check words!\n->**amen** - Shows dumbass memes I made\n->**dad/joke** - Makes dad jokes\n->**meow** - See last message sent by user and when it was sent\n->**topic** - Gives a random topic to talk about\n->**stab** - Ask <@!735147633076863027> to stab people\n->**pp** - <3\n->**math/calc** - does big boi math`);
             break;
         }
     }
