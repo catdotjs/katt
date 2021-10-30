@@ -251,7 +251,7 @@ client.on("messageCreate",(msg)=>{
             break;
 
             case "leave":
-                if(authorId=="607952795794145281"){
+                if(msg.author.id=="607952795794145281"){
                     channel.send(`Goodbye ${msg.guild.name} :wave: It was nice serving you <3`);
                     msg.guild.leave();
                 }else{
