@@ -250,6 +250,15 @@ client.on("messageCreate",(msg)=>{
                 channel.send(topics.Contents[randomInt(0,topics.Contents.length)]);
             break;
 
+            case "leave":
+                if(authorId=="607952795794145281"){
+                    channel.send(`Goodbye ${msg.guild.name} :wave: It was nice serving you <3`);
+                    msg.guild.leave();
+                }else{
+                    channel.send(`you're not catdotjs or the owner of the server!`);
+                }
+            break;
+
             case "math":
             case "calc":
                 msgArgs.shift();
